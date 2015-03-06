@@ -7,7 +7,7 @@
 using namespace std;
 
 class word_input{
-  private:
+  public:
     string pl;
     string en;
     string fr;
@@ -50,12 +50,23 @@ int word_input::wordCompare(int tra, string given){
   }
 }
 
+ostream& operator<< (ostream &output, const word_input &i) {        
+ output << i.pl<< ";" << i.en<< ";" <<  i.fr<< ";";                
+}
+
+istream& operator>> (istream &input, word_input &i) {       
+ input >> i.pl;
+ input >> i.en;
+ input >> i.fr;
+ return input;
+}
+
 int main(){
   vector<word_input> dict;
   int condition=1;
   int translation;
   while (condition){
-    cout<<"1 - add word."<<endl<<"2 - search meaning"<<endl<<"0 - exit"<<endl;
+    cout<<"1 - add word"<<endl<<"2 - search meaning"<<endl<<"3 - save to file" << endl << "4 - read from file" << endl << "0 - exit"<<endl;
     cin>>condition;
 
     if (condition == 1){
@@ -77,6 +88,21 @@ int main(){
         } //if
       } //for
     } //else if
+    else if (condition ==3){
+      ofstream out;
+      out.open("dictionary.txt");
+      if (!out) { cout << "Error when opening the file to write" << endl; return 0;}
+      for(int i=0; i<dict.size(); i++) { out << dict[i]; }
+      out.close();     
+    } //else if 3
+    else if(condition == 4) {
+       ifstream ins;
+       ins.open("dictionary.txt");
+      if (!ins) { cout << "Error when opening the file to read" << endl; return 0;}
+      while(!ins.eof()) {word_input i; ins >> i; dict.push_back(i); }
+      ins.close();
+      dict.erase (dict.begin()+dict.size());
+    }  // else if 4
   }//while (condition)
  return 0;
 } //main
